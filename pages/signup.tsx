@@ -27,6 +27,7 @@ const newUserSchema = yup.object().shape({
   location: yup.string(),
   jobTitle: yup.string(),
   company: yup.string(),
+  klub: yup.string(),
 });
 
 const signUpSchema = yup.object().shape({
@@ -42,12 +43,13 @@ const newUserFormFields = [
   {
     label: "Year of When You Crossed",
     name: "yearCrossed",
-    type: "number",
+    type: "text",
     required: true,
   },
   { label: "Line Name", name: "lineName", type: "text", required: false },
   { label: "Line Number", name: "lineNumber", type: "number", required: true },
   { label: "Ship Name", name: "shipName", type: "text", required: true },
+  { label: "Klub(s)", name: "klub", type: "text", required: false },
   { label: "Phone Number", name: "phoneNumber", type: "text", required: true },
   { label: "Location", name: "location", type: "text", required: false },
   { label: "Job Title", name: "jobTitle", type: "text", required: false },
@@ -79,18 +81,21 @@ const NewUserForm = ({ handleSubmit, onSubmit, register }) => (
   </form>
 );
 
-const SignUpForm = ({ handleSubmit, onSubmit, register }) => (
-  <form onSubmit={handleSubmit(onSubmit)}>
-    <VStack gap={4}>
-      {signUpFormFields.map((field) => (
-        <FormControl key={field.name} isRequired={field.required}>
-          <FormLabel>{field.label}</FormLabel>
-          <Input type={field.type} {...register(field.name as any)} />
-        </FormControl>
-      ))}
-      <Button type="submit">Sign Up</Button>
-    </VStack>
-  </form>
+const SignUpForm = ({ handleSubmit, onSubmit, register, signInWithGoogle }) => (
+  <VStack gap={4}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <VStack gap={4}>
+        {signUpFormFields.map((field) => (
+          <FormControl key={field.name} isRequired={field.required}>
+            <FormLabel>{field.label}</FormLabel>
+            <Input type={field.type} {...register(field.name as any)} />
+          </FormControl>
+        ))}
+        <Button type="submit">Sign Up</Button>
+      </VStack>
+    </form>
+    <Button onClick={signInWithGoogle}>Sign Up with Google</Button>
+  </VStack>
 );
 
 export default function SignUp() {
@@ -111,7 +116,7 @@ export default function SignUp() {
     resolver: yupResolver(signUpSchema),
   });
 
-  const { user, authUser, signUp, createUser } = useAuth();
+  const { user, authUser, signUp, createUser, signInWithGoogle } = useAuth();
 
   const onSubmit = async (data: SignUpCredentials) => {
     console.log({ data });
@@ -133,16 +138,17 @@ export default function SignUp() {
     <Box p={8}>
       <Heading mb={4}>Sign Up</Heading>
       {!!authUser ? (
-        <SignUpForm
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          register={register}
-        />
-      ) : (
         <NewUserForm
           handleSubmit={newUserHandleSubmit}
           onSubmit={onNewUserSubmit}
           register={newUserRegister}
+        />
+      ) : (
+        <SignUpForm
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          register={register}
+          signInWithGoogle={signInWithGoogle}
         />
       )}
     </Box>

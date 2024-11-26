@@ -16,4 +16,5 @@ export type NewUser = {
   location: string;
   jobTitle: string;
   company: string;
+  klub: string;
 };
