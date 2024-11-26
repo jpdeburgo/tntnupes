@@ -12,6 +12,8 @@ export default function Dashboard() {
     );
   }
 
+  console.log(user);
+
   return (
     <Box p={8}>
       <VStack gap={4}>

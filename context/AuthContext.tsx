@@ -72,7 +72,11 @@ export const AuthProvider = ({ children }) => {
     }
     try {
       const newUserRef = doc(db, "users", authUser.uid);
-      await setDoc(newUserRef, newUser);
+      await setDoc(newUserRef, {
+        ...newUser,
+        id: authUser.uid,
+        email: authUser.email,
+      });
     } catch (error) {
       console.error("Error adding document: ", error);
     }
@@ -80,8 +84,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const setCurrentUser = async () => {
-      debugger;
-      if (authUser) {
+      if (authUser && !user) {
         const userDoc = await getDoc(doc(db, "users", authUser.uid));
         if (userDoc.exists) {
           setUser(userDoc.data());
