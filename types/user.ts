@@ -18,3 +18,4 @@ export type NewUser = {
   company: string;
   klub: string;
 };
+
