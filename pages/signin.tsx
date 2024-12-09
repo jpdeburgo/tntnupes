@@ -7,8 +7,6 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { signInWithPopup, GoogleAuthProvider } from "@firebase/auth";
-import { auth } from "../utils/firebase";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
 import * as yup from "yup";
@@ -43,8 +41,7 @@ const SignInForm = ({ signInWithEmail, register, errors }) => (
 );
 
 export default function SignIn() {
-  const { authUser, user, signInWithEmailAndPassword, signInWithGoogle } =
-    useAuth();
+  const { user, signInWithEmailAndPassword, signInWithGoogle } = useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
 

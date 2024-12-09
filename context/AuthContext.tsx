@@ -7,7 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "@firebase/auth";
-import { collection, addDoc, getDoc, doc, setDoc } from "@firebase/firestore";
+import { getDoc, doc, setDoc } from "@firebase/firestore";
 
 import { NewUser, SignUpCredentials } from "../types/user";
 
@@ -76,6 +76,7 @@ export const AuthProvider = ({ children }) => {
         ...newUser,
         id: authUser.uid,
         email: authUser.email,
+        verified: false,
       });
     } catch (error) {
       console.error("Error adding document: ", error);

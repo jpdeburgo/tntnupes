@@ -130,7 +130,7 @@ export default function SignUp() {
 
   useEffect(() => {
     if (user) {
-      router.push("/dashboard");
+      router.push("/waiting-for-verification");
     }
   }, [user]);
 
