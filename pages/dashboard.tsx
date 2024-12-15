@@ -1,18 +1,9 @@
 import { useAuth } from "../context/AuthContext";
 import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react";
+import withAuth from "../utils/withAuth";
 
-export default function Dashboard() {
+const Dashboard = () => {
   const { user, logout } = useAuth();
-
-  if (!user) {
-    return (
-      <Box p={8}>
-        <Heading>Please Sign In</Heading>
-      </Box>
-    );
-  }
-
-  console.log(user);
 
   return (
     <Box p={8}>
@@ -23,4 +14,6 @@ export default function Dashboard() {
       </VStack>
     </Box>
   );
-}
+};
+
+export default withAuth(Dashboard);

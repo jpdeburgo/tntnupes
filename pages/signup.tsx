@@ -6,6 +6,8 @@ import {
   FormLabel,
   Heading,
   VStack,
+  Text,
+  Center,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -14,6 +16,7 @@ import { useAuth } from "../context/AuthContext";
 import { NewUser, SignUpCredentials } from "../types/user";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const newUserSchema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -116,7 +119,8 @@ export default function SignUp() {
     resolver: yupResolver(signUpSchema),
   });
 
-  const { user, authUser, signUp, createUser, signInWithGoogle } = useAuth();
+  const { user, authUser, signUp, createUser, signInWithGoogle, logout } =
+    useAuth();
 
   const onSubmit = async (data: SignUpCredentials) => {
     console.log({ data });
@@ -129,28 +133,42 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && user.verified) {
+      router.push("/dashboard");
+    } else if (user) {
       router.push("/waiting-for-verification");
+      logout();
     }
   }, [user]);
 
   return (
     <Box p={8}>
       <Heading mb={4}>Sign Up</Heading>
-      {!!authUser ? (
-        <NewUserForm
-          handleSubmit={newUserHandleSubmit}
-          onSubmit={onNewUserSubmit}
-          register={newUserRegister}
-        />
-      ) : (
-        <SignUpForm
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-          register={register}
-          signInWithGoogle={signInWithGoogle}
-        />
-      )}
+      <Center>
+        <VStack gap={4}>
+          {!!authUser ? (
+            <NewUserForm
+              handleSubmit={newUserHandleSubmit}
+              onSubmit={onNewUserSubmit}
+              register={newUserRegister}
+            />
+          ) : (
+            <SignUpForm
+              handleSubmit={handleSubmit}
+              onSubmit={onSubmit}
+              register={register}
+              signInWithGoogle={signInWithGoogle}
+            />
+          )}
+          <Text>
+            Already have an account? Click{" "}
+            <Link href={"/signin"} style={{ textDecoration: "underline" }}>
+              here
+            </Link>{" "}
+            to sign in
+          </Text>
+        </VStack>
+      </Center>
     </Box>
   );
 }
