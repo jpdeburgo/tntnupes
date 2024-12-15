@@ -6,6 +6,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Text,
 } from "@chakra-ui/react";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
@@ -13,6 +14,7 @@ import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 
 const schema = yup.object().shape({
   email: yup
@@ -41,7 +43,8 @@ const SignInForm = ({ signInWithEmail, register, errors }) => (
 );
 
 export default function SignIn() {
-  const { user, signInWithEmailAndPassword, signInWithGoogle } = useAuth();
+  const { user, signInWithEmailAndPassword, signInWithGoogle, logout } =
+    useAuth();
   const router = useRouter();
   const [error, setError] = useState("");
 
@@ -64,8 +67,11 @@ export default function SignIn() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && user.verified) {
       router.push("/dashboard");
+    } else if (user) {
+      router.push("/waiting-for-verification");
+      logout();
     }
   }, [user]);
 
@@ -80,6 +86,13 @@ export default function SignIn() {
         />
         {error && <p>{error}</p>}
         <Button onClick={signInWithGoogle}>Sign In with Google</Button>
+        <Text>
+          You do not have an account? Click{" "}
+          <Link href={"/signup"} style={{ textDecoration: "underline" }}>
+            here
+          </Link>{" "}
+          to sign up
+        </Text>
       </VStack>
     </Box>
   );

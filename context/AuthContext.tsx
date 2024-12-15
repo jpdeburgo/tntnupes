@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { auth, db } from "../utils/firebase";
 import {
@@ -8,6 +9,7 @@ import {
   signInWithPopup,
 } from "@firebase/auth";
 import { getDoc, doc, setDoc } from "@firebase/firestore";
+import nookies from "nookies";
 
 import { NewUser, SignUpCredentials } from "../types/user";
 
@@ -29,7 +31,20 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setAuthUser(user);
+      if (user) {
+        setAuthUser(user);
+        const token = await user.getIdToken();
+        nookies.set(
+          undefined,
+          "authUser",
+          JSON.stringify({ token, uid: user.uid }),
+          { path: "/" }
+        ); // Store the token in cookies        const cookieSetter = await cookies();
+      } else {
+        setAuthUser(null);
+        nookies.destroy(undefined, "authUser"); // Remove token if user is logged out
+        setUser(null);
+      }
       setLoading(false);
     });
 

@@ -10,6 +10,8 @@ const withAuth = (Component: any) => {
     useEffect(() => {
       if (!loading && !user) {
         router.push("/signin");
+      } else if (user && !user.verified) {
+        router.push("/waiting-for-verification");
       }
     }, [user, loading, router]);
 
